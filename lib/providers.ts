@@ -17,23 +17,7 @@ export async function fetchFromMetaGraph(): Promise<ViralItem[]> {
   }));
 }
 
-export async function fetchFromBuzzSumo(): Promise<ViralItem[]> {
-  const key = process.env.BUZZSUMO_API_KEY;
-  if (!key) return [];
-  const { data } = await axios.get("https://api.buzzsumo.com/search/articles.json", {
-    params: { q: "facebook viral", num_results: 10, api_key: key }
-  });
-  const results = Array.isArray(data?.results) ? data.results : [];
-  return results.map((item: { title: string }, idx: number) => ({
-    term: item.title.toLowerCase().split(" ").slice(0, 3).join(" "),
-    category: "buzzsumo",
-    usageCount: 1800 - idx * 90,
-    engagement: 6.8 + idx * 0.12,
-    source: "buzzsumo"
-  }));
-}
-
-export async function fetchFromTwitterV2(): Promise<ViralItem[]> {
+export async function fetchFromTwitterPublic(): Promise<ViralItem[]> {
   const key = process.env.TWITTER_BEARER_TOKEN;
   if (!key) return [];
   const { data } = await axios.get("https://api.twitter.com/2/tweets/search/recent", {

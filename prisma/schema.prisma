@@ -60,6 +60,15 @@ model ContentFormula {
   updatedAt         DateTime @updatedAt
 }
 
+model ContentTip {
+  id          Int      @id @default(autoincrement())
+  formula     String   @unique
+  postingTime String
+  strategy    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model DailyTrendSnapshot {
   id           Int      @id @default(autoincrement())
   day          DateTime
@@ -72,34 +81,34 @@ model DailyTrendSnapshot {
 }
 
 model UserAccount {
-  id          Int            @id @default(autoincrement())
-  email       String         @unique
+  id          Int             @id @default(autoincrement())
+  email       String          @unique
   name        String
-  role        UserRole       @default(VIEWER)
-  isActive    Boolean        @default(true)
+  role        UserRole        @default(VIEWER)
+  isActive    Boolean         @default(true)
   lastLoginAt DateTime?
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
   sessions    AdminSession[]
   events      AnalyticsEvent[]
 }
 
 model AdminSession {
-  id         Int         @id @default(autoincrement())
-  token      String      @unique
-  userId     Int
-  expiresAt  DateTime
-  createdAt  DateTime    @default(now())
-  user       UserAccount @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        Int         @id @default(autoincrement())
+  token     String      @unique
+  userId    Int
+  expiresAt DateTime
+  createdAt DateTime    @default(now())
+  user      UserAccount @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model SiteSetting {
-  id         Int      @id @default(autoincrement())
-  key        String   @unique
-  value      String
-  updatedBy  String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  updatedBy String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model ApiCredential {
@@ -116,13 +125,13 @@ model ApiCredential {
 }
 
 model AnalyticsEvent {
-  id          Int         @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   eventType   String
   entityType  String
   entityValue String
-  engagement  Float       @default(0)
+  engagement  Float        @default(0)
   metadata    String?
-  occurredAt  DateTime    @default(now())
+  occurredAt  DateTime     @default(now())
   userId      Int?
   user        UserAccount? @relation(fields: [userId], references: [id], onDelete: SetNull)
 }

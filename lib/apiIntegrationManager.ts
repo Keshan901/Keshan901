@@ -1,12 +1,11 @@
-import { fetchFromBuzzSumo, fetchFromMetaGraph, fetchFromPublicFallback, fetchFromTwitterV2 } from "@/lib/providers";
+import { fetchFromMetaGraph, fetchFromPublicFallback, fetchFromTwitterPublic } from "@/lib/providers";
 import type { ViralItem } from "@/lib/types";
 
 export class APIIntegrationManager {
   async fetchAllProviders(): Promise<ViralItem[]> {
     const results = await Promise.allSettled([
-      fetchFromBuzzSumo(),
       fetchFromMetaGraph(),
-      fetchFromTwitterV2(),
+      fetchFromTwitterPublic(),
       fetchFromPublicFallback(),
     ]);
 

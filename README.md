@@ -1,33 +1,30 @@
 # Facebook Viral Keywords Report DB (Full-Stack)
 
-Modern full-stack searchable database website for viral keywords, hashtags, and content formulas with an admin control panel.
+Modern full-stack searchable database website for viral keywords, hashtags, formulas, and tips with an admin control panel.
 
 ## Stack
 - Next.js 15 + TypeScript + Tailwind CSS
 - Prisma ORM + MySQL
 - Recharts analytics dashboards
 - Scheduled ingestion jobs with `node-cron`
-- Multi-provider API integration (Meta Graph, BuzzSumo, Twitter v2, Reddit/HackerNews fallback)
+- Multi-provider API integration (Meta Graph, Twitter API, Reddit/HackerNews public fallback)
 
 ## New Admin & Data Capabilities
-- `/admin` comprehensive dashboard with 5 tabs:
-  - Overview (stats + charts)
-  - Users management
-  - Site settings configuration
-  - API credentials management
-  - Hashtag categories management
-- Role-based access control (admin-only protected management endpoints)
-- CSV export for hashtags and formulas
-- Real-time analytics chart feed from ingestion events
+- `/admin` dashboard with management tabs and CRUD tools.
+- CRUD for keywords, hashtags, formulas, tips, and settings.
+- API key management tab with placeholder providers ready for credentials.
+- Role-based access control (admin-only protected management endpoints).
+- CSV export for hashtags and formulas.
 
 ## Database Models
 Core models:
 - Keyword
 - Hashtag
 - ContentFormula
+- ContentTip
 - DailyTrendSnapshot
 
-Six new admin/ops models:
+Six admin/ops models:
 - UserAccount
 - AdminSession
 - SiteSetting
@@ -47,7 +44,10 @@ Admin:
 - `GET/PATCH /api/admin/users`
 - `GET/PUT /api/admin/settings`
 - `GET/PUT/POST /api/admin/apis`
-- `GET/PUT /api/admin/hashtags`
+- `GET/POST/PUT/DELETE /api/admin/hashtags`
+- `GET/POST/PUT/DELETE /api/admin/keywords`
+- `GET/POST/PUT/DELETE /api/admin/formulas`
+- `GET/POST/PUT/DELETE /api/admin/tips`
 - `GET /api/admin/analytics`
 
 ## Quick Start

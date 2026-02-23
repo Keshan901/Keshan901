@@ -9,24 +9,13 @@ async function main() {
     prisma.hashtagCategory.upsert({ where: { name: "video" }, update: {}, create: { name: "video", description: "Reels and short-form video", color: "#9333ea" } }),
   ]);
 
-  await prisma.userAccount.upsert({
-    where: { email: "admin@viral.local" },
-    update: { role: UserRole.ADMIN, isActive: true },
-    create: { email: "admin@viral.local", name: "Admin", role: UserRole.ADMIN, isActive: true }
-  });
-
-  await prisma.userAccount.upsert({
-    where: { email: "editor@viral.local" },
-    update: { role: UserRole.EDITOR },
-    create: { email: "editor@viral.local", name: "Editor", role: UserRole.EDITOR, isActive: true }
-  });
+  await prisma.userAccount.upsert({ where: { email: "admin@viral.local" }, update: { role: UserRole.ADMIN, isActive: true }, create: { email: "admin@viral.local", name: "Admin", role: UserRole.ADMIN, isActive: true } });
+  await prisma.userAccount.upsert({ where: { email: "editor@viral.local" }, update: { role: UserRole.EDITOR }, create: { email: "editor@viral.local", name: "Editor", role: UserRole.EDITOR, isActive: true } });
 
   const keywords = [
     { term: "story-driven hook", category: "video", usageCount: 890, engagement: 8.9, source: "seed" },
     { term: "before and after reveal", category: "image", usageCount: 650, engagement: 7.6, source: "seed" },
-    { term: "3-step tutorial", category: "education", usageCount: 710, engagement: 8.2, source: "seed" },
-    { term: "behind the scenes", category: "lifestyle", usageCount: 520, engagement: 7.1, source: "seed" },
-    { term: "myth vs fact", category: "education", usageCount: 480, engagement: 7.9, source: "seed" }
+    { term: "3-step tutorial", category: "education", usageCount: 710, engagement: 8.2, source: "seed" }
   ];
 
   const hashtags = [
@@ -48,24 +37,20 @@ async function main() {
     await prisma.hashtag.upsert({ where: { tag: hashtag.tag }, update: hashtag, create: hashtag });
   }
 
-  await prisma.contentFormula.upsert({
-    where: { title: "Problem → Agitate → Solve" },
-    update: {},
-    create: {
-      title: "Problem → Agitate → Solve",
-      template: "Start with pain, amplify consequences, then give the practical fix.",
-      contentType: "short video",
-      avgEngagementRate: 8.9,
-      category: "conversion"
-    }
-  });
+  await prisma.contentFormula.upsert({ where: { title: "Problem → Agitate → Solve" }, update: {}, create: { title: "Problem → Agitate → Solve", template: "Start with pain, amplify consequences, then give the practical fix.", contentType: "short video", avgEngagementRate: 8.9, category: "conversion" } });
+
+  const tips = [
+    { formula: "Problem → Agitate → Solve", postingTime: "Tue–Thu, 9:00 AM to 11:00 AM", strategy: "Lead with a clear pain point then provide practical steps." },
+    { formula: "Hook → Story → Offer", postingTime: "Mon, Wed, Fri at 12:00 PM and 7:00 PM", strategy: "Start with a bold hook, short story, and direct CTA." }
+  ];
+  for (const tip of tips) {
+    await prisma.contentTip.upsert({ where: { formula: tip.formula }, update: tip, create: tip });
+  }
 
   await prisma.siteSetting.upsert({ where: { key: "site_name" }, update: { value: "Viral Keywords Report DB" }, create: { key: "site_name", value: "Viral Keywords Report DB", updatedBy: "seed" } });
-  await prisma.siteSetting.upsert({ where: { key: "default_provider" }, update: { value: "public-trends" }, create: { key: "default_provider", value: "public-trends", updatedBy: "seed" } });
-
-  await prisma.apiCredential.upsert({ where: { provider: "buzzsumo" }, update: {}, create: { provider: "buzzsumo", apiKey: "", enabled: false, lastStatus: "not-configured" } });
   await prisma.apiCredential.upsert({ where: { provider: "meta-graph" }, update: {}, create: { provider: "meta-graph", apiKey: "", enabled: false, lastStatus: "not-configured" } });
   await prisma.apiCredential.upsert({ where: { provider: "twitter-v2" }, update: {}, create: { provider: "twitter-v2", apiKey: "", enabled: false, lastStatus: "not-configured" } });
+  await prisma.apiCredential.upsert({ where: { provider: "public-trends" }, update: {}, create: { provider: "public-trends", apiKey: "", enabled: true, lastStatus: "active" } });
 }
 
 main().finally(async () => prisma.$disconnect());
