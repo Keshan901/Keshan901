@@ -10,7 +10,8 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",
-    "job:fetch": "tsx scripts/fetchViralData.ts"
+    "job:fetch": "tsx scripts/fetchViralData.ts",
+    "test": "node --test tests/**/*.test.mjs"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
@@ -21,7 +22,8 @@
     "next": "15.1.4",
     "node-cron": "^3.0.3",
     "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "react-dom": "19.0.0",
+    "recharts": "^2.15.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

@@ -1,0 +1,21 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { getAdminUserFromCookie } from "@/lib/admin/auth";
+
+export async function GET() {
+  const admin = await getAdminUserFromCookie();
+  if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const [categories, hashtags] = await Promise.all([
+    prisma.hashtagCategory.findMany({ orderBy: { name: "asc" } }),
+    prisma.hashtag.findMany({ include: { taxonomy: true }, orderBy: { usageCount: "desc" } })
+  ]);
+  return NextResponse.json({ categories, hashtags });
+}
+
+export async function PUT(request: NextRequest) {
+  const admin = await getAdminUserFromCookie();
+  if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const body = await request.json();
+  const updated = await prisma.hashtag.update({ where: { id: body.id }, data: { categoryId: body.categoryId, category: body.category } });
+  return NextResponse.json({ hashtag: updated });
+}

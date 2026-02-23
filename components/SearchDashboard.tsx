@@ -90,7 +90,7 @@ export default function SearchDashboard({
     <div className="space-y-8">
       <section className="rounded-2xl bg-brand.deep p-6 text-white shadow-xl">
         <h1 className="text-3xl font-bold">Facebook Viral Keywords Report Explorer</h1>
-        <p className="mt-2 text-slate-200">Search keywords, hashtags, and proven content formulas. Data can auto-refresh daily from API connectors.</p>
+        <p className="mt-2 text-slate-200">Search keywords, hashtags, and proven content formulas. Data auto-refreshes from multi-provider APIs.</p>
       </section>
 
       <section className="grid gap-3 rounded-xl border bg-white p-4 md:grid-cols-4">
@@ -135,7 +135,13 @@ export default function SearchDashboard({
       </section>
 
       <section>
-        <h2 className="mb-3 text-xl font-semibold text-brand.deep">Top Trending Hashtags</h2>
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-xl font-semibold text-brand.deep">Top Trending Hashtags</h2>
+          <div className="flex gap-2 text-xs">
+            <a href="/api/export?type=hashtags" className="rounded border bg-white px-2 py-1">Export Hashtags CSV</a>
+            <a href="/api/export?type=formulas" className="rounded border bg-white px-2 py-1">Export Formulas CSV</a>
+          </div>
+        </div>
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {filteredHashtags.slice(0, 10).map((item) => (
             <article key={item.id} className="rounded-xl border bg-white p-4 shadow-sm">
@@ -148,7 +154,7 @@ export default function SearchDashboard({
               <p className="mt-2 text-sm text-slate-600">Usage: {item.usageCount.toLocaleString()} · Engagement: {item.engagement}%</p>
               <div className="mt-2 flex items-center gap-2 text-xs">
                 <span className="rounded bg-slate-100 px-2 py-1">{item.category}</span>
-                {(item.trending || filteredHashtags.indexOf(item) < 10) && <span className="rounded bg-brand.light px-2 py-1 text-brand.deep">Trending</span>}
+                {(item.trending || item.engagement >= 8.5 || filteredHashtags.indexOf(item) < 10) && <span className="rounded bg-brand.light px-2 py-1 text-brand.deep">🔥 Trending</span>}
               </div>
             </article>
           ))}

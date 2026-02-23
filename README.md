@@ -1,62 +1,69 @@
 # Facebook Viral Keywords Report DB (Full-Stack)
 
-A modern full-stack searchable database website for viral keywords, hashtags, and content formulas.
+Modern full-stack searchable database website for viral keywords, hashtags, and content formulas with an admin control panel.
 
 ## Stack
 - Next.js 15 + TypeScript + Tailwind CSS
-- Prisma ORM
-- MySQL database
+- Prisma ORM + MySQL
+- Recharts analytics dashboards
 - Scheduled ingestion jobs with `node-cron`
-- API connectors for Meta Graph, BuzzSumo, and public fallback data source
+- Multi-provider API integration (Meta Graph, BuzzSumo, Twitter v2, Reddit/HackerNews fallback)
 
-## Features
-- Real-time search across keywords, hashtags, and formulas
-- Advanced filters (category, content type, minimum engagement)
-- Top 10 trending hashtag badges sorted by usage count
-- Copy to clipboard for hashtags and formula templates
-- Content Tips page with best posting times and engagement strategies
-- Full backend API routes (`/api/search`, `/api/trends`)
-- Daily scheduled job for viral data syncing and trend snapshots
-- Historical trend storage via daily snapshots
+## New Admin & Data Capabilities
+- `/admin` comprehensive dashboard with 5 tabs:
+  - Overview (stats + charts)
+  - Users management
+  - Site settings configuration
+  - API credentials management
+  - Hashtag categories management
+- Role-based access control (admin-only protected management endpoints)
+- CSV export for hashtags and formulas
+- Real-time analytics chart feed from ingestion events
+
+## Database Models
+Core models:
+- Keyword
+- Hashtag
+- ContentFormula
+- DailyTrendSnapshot
+
+Six new admin/ops models:
+- UserAccount
+- AdminSession
+- SiteSetting
+- ApiCredential
+- HashtagCategory
+- AnalyticsEvent
+
+## API Endpoints
+Public:
+- `GET /api/search`
+- `GET /api/trends`
+- `GET /api/export?type=hashtags|formulas`
+
+Admin:
+- `POST/DELETE /api/admin/auth`
+- `GET /api/admin/overview`
+- `GET/PATCH /api/admin/users`
+- `GET/PUT /api/admin/settings`
+- `GET/PUT/POST /api/admin/apis`
+- `GET/PUT /api/admin/hashtags`
+- `GET /api/admin/analytics`
 
 ## Quick Start
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-2. Copy env file:
-   ```bash
-   cp .env.example .env
-   ```
-3. Start MySQL:
-   ```bash
-   docker compose up -d
-   ```
-4. Run database migration + seed:
-   ```bash
-   npm run db:migrate -- --name init
-   npm run db:seed
-   ```
-5. Start dev server:
-   ```bash
-   npm run dev
-   ```
+1. `npm install`
+2. `cp .env.example .env`
+3. `docker compose up -d`
+4. `npm run db:migrate -- --name init`
+5. `npm run db:seed`
+6. `npm run dev`
 
-## Scheduled Data Jobs
-Run ingestion one time:
-```bash
-npm run job:fetch -- --once
-```
+Seeded admin login:
+- `admin@viral.local`
 
-Run cron worker (daily at 03:00 UTC):
-```bash
-npm run job:fetch
-```
+## Jobs
+- One-time ingest: `npm run job:fetch -- --once`
+- Scheduler worker: `npm run job:fetch` (daily at 03:00 UTC)
 
-## API Integrations
-Set any keys in `.env`:
-- `META_GRAPH_ACCESS_TOKEN`
-- `BUZZSUMO_API_KEY`
-- `BRANDWATCH_API_KEY` (reserved for extension)
-
-If keys are missing, the app still works with seeded data and public fallback fetches.
+## Tests
+- Run: `npm test`

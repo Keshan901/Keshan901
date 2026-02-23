@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
 model Keyword {
   id          Int      @id @default(autoincrement())
   term        String   @unique
@@ -19,16 +25,28 @@ model Keyword {
   snapshots   DailyTrendSnapshot[]
 }
 
+model HashtagCategory {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+  color       String    @default("#0ea5a4")
+  hashtags    Hashtag[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
 model Hashtag {
-  id          Int      @id @default(autoincrement())
-  tag         String   @unique
+  id          Int              @id @default(autoincrement())
+  tag         String           @unique
   category    String
-  usageCount  Int      @default(0)
-  engagement  Float    @default(0)
-  trending    Boolean  @default(false)
+  usageCount  Int              @default(0)
+  engagement  Float            @default(0)
+  trending    Boolean          @default(false)
   source      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  categoryId  Int?
+  taxonomy    HashtagCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 }
 
 model ContentFormula {
@@ -51,4 +69,60 @@ model DailyTrendSnapshot {
   keyword      Keyword  @relation(fields: [keywordId], references: [id], onDelete: Cascade)
 
   @@unique([day, keywordId])
+}
+
+model UserAccount {
+  id          Int            @id @default(autoincrement())
+  email       String         @unique
+  name        String
+  role        UserRole       @default(VIEWER)
+  isActive    Boolean        @default(true)
+  lastLoginAt DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  sessions    AdminSession[]
+  events      AnalyticsEvent[]
+}
+
+model AdminSession {
+  id         Int         @id @default(autoincrement())
+  token      String      @unique
+  userId     Int
+  expiresAt  DateTime
+  createdAt  DateTime    @default(now())
+  user       UserAccount @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SiteSetting {
+  id         Int      @id @default(autoincrement())
+  key        String   @unique
+  value      String
+  updatedBy  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model ApiCredential {
+  id         Int      @id @default(autoincrement())
+  provider   String   @unique
+  apiKey     String
+  apiSecret  String?
+  baseUrl    String?
+  enabled    Boolean  @default(true)
+  lastStatus String   @default("unknown")
+  lastTested DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model AnalyticsEvent {
+  id          Int         @id @default(autoincrement())
+  eventType   String
+  entityType  String
+  entityValue String
+  engagement  Float       @default(0)
+  metadata    String?
+  occurredAt  DateTime    @default(now())
+  userId      Int?
+  user        UserAccount? @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
