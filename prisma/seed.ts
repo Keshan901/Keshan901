@@ -9,8 +9,8 @@ async function main() {
     prisma.hashtagCategory.upsert({ where: { name: "video" }, update: {}, create: { name: "video", description: "Reels and short-form video", color: "#9333ea" } }),
   ]);
 
-  await prisma.userAccount.upsert({ where: { email: "admin@viral.local" }, update: { role: UserRole.ADMIN, isActive: true }, create: { email: "admin@viral.local", name: "Admin", role: UserRole.ADMIN, isActive: true } });
-  await prisma.userAccount.upsert({ where: { email: "editor@viral.local" }, update: { role: UserRole.EDITOR }, create: { email: "editor@viral.local", name: "Editor", role: UserRole.EDITOR, isActive: true } });
+  await prisma.userAccount.upsert({ where: { email: "admin@viral.local" }, update: { role: UserRole.ADMIN, isActive: true }, create: { email: "admin@viral.local", name: "Admin", password: "password", role: UserRole.ADMIN, isActive: true } });
+  await prisma.userAccount.upsert({ where: { email: "editor@viral.local" }, update: { role: UserRole.EDITOR }, create: { email: "editor@viral.local", name: "Editor", password: "password", role: UserRole.EDITOR, isActive: true } });
 
   const keywords = [
     { term: "story-driven hook", category: "video", usageCount: 890, engagement: 8.9, source: "seed" },
@@ -54,3 +54,4 @@ async function main() {
 }
 
 main().finally(async () => prisma.$disconnect());
+

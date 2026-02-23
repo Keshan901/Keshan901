@@ -1,6 +1,16 @@
 # Facebook Viral Keywords Report DB (Full-Stack)
 
-Modern full-stack searchable database website for viral keywords, hashtags, formulas, and tips with an admin control panel.
+Modern full-stack searchable database website for viral keywords, hashtags, formulas, and tips with admin + user access flows.
+
+## Highlights
+- Maintenance-safe behavior when APIs/data calls fail (`"This in maintence mode recover soonly"`).
+- Expanded navigation: Home, Popular Tags, Explore, Blogs, My Favorites, Sign-in, Join with us.
+- User sign-in/sign-up flows and protected pages (`/favorites`, `/explore`).
+- Homepage pagination with **Show more** behavior:
+  - not signed-in users see a fade-in signup card
+  - signed-in users are redirected to `/explore`
+- Admin CRUD for hashtags, keywords, formulas, tips, settings, and API keys.
+- API key placeholders configurable from admin (meta-graph, twitter-v2, public-trends).
 
 ## Stack
 - Next.js 15 + TypeScript + Tailwind CSS
@@ -9,34 +19,20 @@ Modern full-stack searchable database website for viral keywords, hashtags, form
 - Scheduled ingestion jobs with `node-cron`
 - Multi-provider API integration (Meta Graph, Twitter API, Reddit/HackerNews public fallback)
 
-## New Admin & Data Capabilities
-- `/admin` dashboard with management tabs and CRUD tools.
-- CRUD for keywords, hashtags, formulas, tips, and settings.
-- API key management tab with placeholder providers ready for credentials.
-- Role-based access control (admin-only protected management endpoints).
-- CSV export for hashtags and formulas.
-
-## Database Models
-Core models:
-- Keyword
-- Hashtag
-- ContentFormula
-- ContentTip
-- DailyTrendSnapshot
-
-Six admin/ops models:
-- UserAccount
-- AdminSession
-- SiteSetting
-- ApiCredential
-- HashtagCategory
-- AnalyticsEvent
+## Main Routes
+- `/` home dashboard
+- `/explore` full results + banner + advanced filter section
+- `/favorites` protected favorites landing
+- `/sign-in`, `/sign-up`
+- `/tips`
+- `/admin`
 
 ## API Endpoints
 Public:
 - `GET /api/search`
 - `GET /api/trends`
 - `GET /api/export?type=hashtags|formulas`
+- `POST/DELETE /api/auth/user`
 
 Admin:
 - `POST/DELETE /api/admin/auth`
@@ -58,12 +54,9 @@ Admin:
 5. `npm run db:seed`
 6. `npm run dev`
 
-Seeded admin login:
-- `admin@viral.local`
-
-## Jobs
-- One-time ingest: `npm run job:fetch -- --once`
-- Scheduler worker: `npm run job:fetch` (daily at 03:00 UTC)
+Seeded accounts:
+- Admin: `admin@viral.local` / `password`
+- Editor: `editor@viral.local` / `password`
 
 ## Tests
 - Run: `npm test`

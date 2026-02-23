@@ -81,16 +81,27 @@ model DailyTrendSnapshot {
 }
 
 model UserAccount {
-  id          Int             @id @default(autoincrement())
-  email       String          @unique
-  name        String
-  role        UserRole        @default(VIEWER)
-  isActive    Boolean         @default(true)
-  lastLoginAt DateTime?
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  sessions    AdminSession[]
-  events      AnalyticsEvent[]
+  id           Int             @id @default(autoincrement())
+  email        String          @unique
+  name         String
+  password     String          @default("password")
+  role         UserRole        @default(VIEWER)
+  isActive     Boolean         @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  sessions     AdminSession[]
+  userSessions UserSession[]
+  events       AnalyticsEvent[]
+}
+
+model UserSession {
+  id        Int         @id @default(autoincrement())
+  token     String      @unique
+  userId    Int
+  expiresAt DateTime
+  createdAt DateTime    @default(now())
+  user      UserAccount @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model AdminSession {
