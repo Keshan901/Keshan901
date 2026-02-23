@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Keyword {
+  id          Int      @id @default(autoincrement())
+  term        String   @unique
+  category    String
+  usageCount  Int      @default(0)
+  engagement  Float    @default(0)
+  source      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  snapshots   DailyTrendSnapshot[]
+}
+
+model Hashtag {
+  id          Int      @id @default(autoincrement())
+  tag         String   @unique
+  category    String
+  usageCount  Int      @default(0)
+  engagement  Float    @default(0)
+  trending    Boolean  @default(false)
+  source      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ContentFormula {
+  id                Int      @id @default(autoincrement())
+  title             String   @unique
+  template          String
+  contentType       String
+  avgEngagementRate Float    @default(0)
+  category          String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model DailyTrendSnapshot {
+  id           Int      @id @default(autoincrement())
+  day          DateTime
+  keywordId    Int
+  usageCount   Int
+  engagement   Float
+  keyword      Keyword  @relation(fields: [keywordId], references: [id], onDelete: Cascade)
+
+  @@unique([day, keywordId])
+}
