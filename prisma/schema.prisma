@@ -1,0 +1,180 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  CREATOR
+  ADMIN
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum ItemType {
+  KEYWORD
+  HASHTAG
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model User {
+  id                 String               @id @default(auto()) @map("_id") @db.ObjectId
+  name               String?
+  email              String               @unique
+  emailVerified      DateTime?
+  image              String?
+  passwordHash       String?
+  role               Role                 @default(USER)
+  failedLoginAttempts Int                 @default(0)
+  lockedUntil        DateTime?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  accounts           Account[]
+  sessions           Session[]
+  creatorApplications CreatorApplication[]
+  keywordSets        KeywordSet[]
+  hashtagSets        HashtagSet[]
+  blogPosts          BlogPost[]
+  savedItems         SavedItem[]
+  reports            Report[]
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model CreatorApplication {
+  id        String            @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String            @db.ObjectId
+  status    ApplicationStatus @default(PENDING)
+  message   String
+  createdAt DateTime          @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model KeywordSet {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  platform   String
+  category   String
+  language   String
+  content    String[]
+  visibility Visibility @default(PUBLIC)
+  authorId   String     @db.ObjectId
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  copyCount  Int        @default(0)
+
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
+
+model HashtagSet {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  platform   String
+  category   String
+  language   String
+  content    String[]
+  visibility Visibility @default(PUBLIC)
+  authorId   String     @db.ObjectId
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  copyCount  Int        @default(0)
+
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
+
+model DailyTip {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  body      String
+  date      DateTime
+  createdAt DateTime @default(now())
+}
+
+model BlogPost {
+  id              String     @id @default(auto()) @map("_id") @db.ObjectId
+  slug            String     @unique
+  title           String
+  excerpt         String
+  contentMarkdown String
+  authorId        String     @db.ObjectId
+  status          BlogStatus @default(DRAFT)
+  createdAt       DateTime   @default(now())
+  publishedAt     DateTime?
+
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
+
+model SavedItem {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  itemType  ItemType
+  itemId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Report {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  reporterId String   @db.ObjectId
+  itemType   ItemType
+  itemId     String
+  reason     String
+  createdAt  DateTime @default(now())
+
+  reporter User @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+}
