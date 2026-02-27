@@ -56,7 +56,7 @@ export async function upsertCategory(formData: FormData) {
   revalidatePath("/admin-dashboard");
 }
 
-export async function deleteCategory(categoryId: string) {
+export async function deleteCategory(categoryId: string, _formData?: FormData) {
   await assertAdmin();
 
   await prisma.category.delete({ where: { id: categoryId } });
@@ -137,7 +137,7 @@ export async function upsertPost(formData: FormData) {
   revalidatePath("/creators-advice");
 }
 
-export async function deletePost(postId: string) {
+export async function deletePost(postId: string, _formData?: FormData) {
   await assertAdmin();
   await prisma.post.delete({ where: { id: postId } });
   revalidatePath("/admin-dashboard");
@@ -217,13 +217,13 @@ export async function upsertDailyTip(formData: FormData) {
   revalidatePath("/user-dashboard");
 }
 
-export async function deleteDailyTip(tipId: string) {
+export async function deleteDailyTip(tipId: string, _formData?: FormData) {
   await assertAdmin();
   await prisma.dailyTip.delete({ where: { id: tipId } });
   revalidatePath("/admin-dashboard");
 }
 
-export async function generateTipPlaceholders() {
+export async function generateTipPlaceholders(_formData?: FormData) {
   const adminId = await assertAdmin();
   const today = new Date();
 
@@ -257,7 +257,7 @@ export async function updateUserRole(formData: FormData) {
   revalidatePath("/admin-dashboard");
 }
 
-export async function toggleUserLock(userId: string, lock: boolean) {
+export async function toggleUserLock(userId: string, lock: boolean, _formData?: FormData) {
   await assertAdmin();
 
   await prisma.user.update({
