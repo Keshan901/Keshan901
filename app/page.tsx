@@ -6,8 +6,8 @@ import { motion } from "framer-motion";
 const navLinks = [
   { label: "Explore", href: "/explore" },
   { label: "Trending Contents", href: "/trending" },
-  { label: "Creators", href: "#creators" },
-  { label: "TikTok Creates", href: "#tiktok-creates" }
+  { label: "Creators", href: "/creators-advice" },
+  { label: "TikTok Creates", href: "/user-dashboard" }
 ];
 
 const sections = [

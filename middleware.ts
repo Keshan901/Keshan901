@@ -46,6 +46,20 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  if (!publicRoutes.has(pathname) && pathname.startsWith("/user-dashboard")) {
+    if (!isLoggedIn) {
+      const response = NextResponse.redirect(new URL("/login", request.url));
+      applySecurityHeaders(response);
+      return response;
+    }
+
+    if (token?.role !== "USER") {
+      const response = NextResponse.redirect(new URL("/admin", request.url));
+      applySecurityHeaders(response);
+      return response;
+    }
+  }
+
   const response = NextResponse.next();
   applySecurityHeaders(response);
   return response;

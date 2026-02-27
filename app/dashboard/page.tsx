@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { auth } from "@/auth";
 
 export default async function DashboardPage() {
@@ -8,6 +10,11 @@ export default async function DashboardPage() {
       <h1 className="text-3xl font-bold">Dashboard</h1>
       <p>You are signed in as {session?.user?.email}.</p>
       <p className="text-muted-foreground">Role: {session?.user?.role}</p>
+      {session?.user?.role === "USER" ? (
+        <Link href="/user-dashboard" className="text-fuchsia-300 hover:underline">
+          Go to User Dashboard
+        </Link>
+      ) : null}
     </main>
   );
 }
