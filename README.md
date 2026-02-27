@@ -8,6 +8,7 @@ This repository is scaffolded as a **Next.js (App Router) TypeScript** project w
 - Node.js runtime (via `export const runtime = "nodejs"` in `app/layout.tsx`)
 - Prisma ORM with MongoDB provider + seed script
 - Auth.js (NextAuth credentials), roles (`USER`/`ADMIN`), middleware protection, and security headers
+- Framer Motion animated landing page with 8 responsive sections, centered-logo navbar, gradient CTA, and footer
 
 ### Scripts
 
