@@ -3,7 +3,12 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-const navLinks = ["Explore", "Trending Contents", "Creators", "TikTok Creates"];
+const navLinks = [
+  { label: "Explore", href: "/explore" },
+  { label: "Trending Contents", href: "/trending" },
+  { label: "Creators", href: "#creators" },
+  { label: "TikTok Creates", href: "#tiktok-creates" }
+];
 
 const sections = [
   {
@@ -82,9 +87,9 @@ export default function LandingPage() {
 
           <div className="hidden w-1/3 items-center justify-end gap-6 md:flex">
             {navLinks.map((link) => (
-              <a key={link} href={`#${link.toLowerCase().replace(/\s+/g, "-")}`} className="text-sm text-slate-300 transition hover:text-white">
-                {link}
-              </a>
+              <Link key={link.label} href={link.href} className="text-sm text-slate-300 transition hover:text-white">
+                {link.label}
+              </Link>
             ))}
             <Link
               href="/login"

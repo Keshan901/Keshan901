@@ -65,7 +65,9 @@ async function main() {
       isPublished: true,
       publishedAt: new Date(),
       authorId: adminUser.id,
-      categoryId: newsCategory.id
+      categoryId: newsCategory.id,
+      tags: ["product", "release"],
+      views: 120
     },
     create: {
       title: "New Platform Updates",
@@ -76,7 +78,9 @@ async function main() {
       isPublished: true,
       publishedAt: new Date(),
       authorId: adminUser.id,
-      categoryId: newsCategory.id
+      categoryId: newsCategory.id,
+      tags: ["product", "release"],
+      views: 120
     }
   });
 
@@ -89,7 +93,9 @@ async function main() {
       isPublished: true,
       publishedAt: new Date(),
       authorId: writerUser.id,
-      categoryId: adviceCategory.id
+      categoryId: adviceCategory.id,
+      tags: ["strategy", "creator"],
+      views: 95
     },
     create: {
       title: "How to Build a Daily Content Routine",
@@ -100,7 +106,9 @@ async function main() {
       isPublished: true,
       publishedAt: new Date(),
       authorId: writerUser.id,
-      categoryId: adviceCategory.id
+      categoryId: adviceCategory.id,
+      tags: ["strategy", "creator"],
+      views: 95
     }
   });
 
