@@ -9,6 +9,7 @@ export default async function AdminPage() {
   return (
     <main className="mx-auto min-h-screen w-full max-w-5xl space-y-6 p-8">
       <h1 className="text-3xl font-bold">Admin Moderation</h1>
+      <a href="/admin-dashboard" className="text-sm text-cyan-300 hover:underline">Open advanced admin dashboard</a>
       <p className="text-muted-foreground">Authenticated as: {session?.user?.email}</p>
 
       <section className="space-y-3">

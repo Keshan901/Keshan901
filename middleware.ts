@@ -30,7 +30,7 @@ export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request, secret: process.env.AUTH_SECRET });
   const isLoggedIn = Boolean(token?.sub);
 
-  if (!publicRoutes.has(pathname) && pathname.startsWith("/admin")) {
+  if (!publicRoutes.has(pathname) && (pathname.startsWith("/admin") || pathname.startsWith("/admin-dashboard"))) {
     if (!isLoggedIn || token?.role !== "ADMIN") {
       const response = NextResponse.redirect(new URL("/login", request.url));
       applySecurityHeaders(response);

@@ -13,6 +13,8 @@ This repository is scaffolded as a **Next.js (App Router) TypeScript** project w
 - User dashboard (`/user-dashboard`) with tip of the day, daily tips feed, recommendations, and favorites
 - Content routes for `/news`, `/blogs`, and `/creators-advice` with favorite toggles
 - Commenting on blogs/news only, with admin moderation actions (hide/delete/restore)
+- Advanced `/admin-dashboard` with CRUD for users, posts, categories/subcategories, and daily tips
+- TipTap rich text editing + server-side sanitization + post scheduling/drafts/SEO fields
 
 ### Scripts
 

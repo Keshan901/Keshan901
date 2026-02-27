@@ -1,4 +1,4 @@
-import { PrismaClient, PostType, Role } from "@prisma/client";
+import { PrismaClient, PostStatus, PostType, Role } from "@prisma/client";
 import { hashSync } from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -62,6 +62,7 @@ async function main() {
       title: "New Platform Updates",
       content: "We just shipped several quality-of-life improvements.",
       type: PostType.NEWS,
+      status: PostStatus.PUBLISHED,
       isPublished: true,
       publishedAt: new Date(),
       authorId: adminUser.id,
@@ -75,6 +76,7 @@ async function main() {
       excerpt: "A quick overview of this week’s key launches.",
       content: "We just shipped several quality-of-life improvements.",
       type: PostType.NEWS,
+      status: PostStatus.PUBLISHED,
       isPublished: true,
       publishedAt: new Date(),
       authorId: adminUser.id,
@@ -90,6 +92,7 @@ async function main() {
       title: "How to Build a Daily Content Routine",
       content: "Start with one repeatable format and iterate weekly.",
       type: PostType.ADVICE,
+      status: PostStatus.PUBLISHED,
       isPublished: true,
       publishedAt: new Date(),
       authorId: writerUser.id,
@@ -103,6 +106,7 @@ async function main() {
       excerpt: "A repeatable process for consistent publishing.",
       content: "Start with one repeatable format and iterate weekly.",
       type: PostType.ADVICE,
+      status: PostStatus.PUBLISHED,
       isPublished: true,
       publishedAt: new Date(),
       authorId: writerUser.id,
