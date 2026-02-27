@@ -1,4 +1,4 @@
-import { PostType } from "@prisma/client";
+import { CommentStatus, PostType } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 
@@ -12,7 +12,8 @@ export async function getPostsByType(type: PostType, userId?: string) {
       include: {
         _count: {
           select: {
-            favorites: true
+            favorites: true,
+            comments: true
           }
         }
       },
@@ -21,11 +22,13 @@ export async function getPostsByType(type: PostType, userId?: string) {
 
     return posts.map((post) => ({
       id: post.id,
+      slug: post.slug,
       title: post.title,
       excerpt: post.excerpt,
       type: post.type,
       views: post.views,
       favoritesCount: post._count.favorites,
+      commentsCount: post._count.comments,
       tags: post.tags,
       isFavorited: false
     }));
@@ -39,7 +42,8 @@ export async function getPostsByType(type: PostType, userId?: string) {
     include: {
       _count: {
         select: {
-          favorites: true
+          favorites: true,
+          comments: true
         }
       },
       favorites: {
@@ -56,14 +60,94 @@ export async function getPostsByType(type: PostType, userId?: string) {
 
   return posts.map((post) => ({
     id: post.id,
+    slug: post.slug,
     title: post.title,
     excerpt: post.excerpt,
     type: post.type,
     views: post.views,
     favoritesCount: post._count.favorites,
+    commentsCount: post._count.comments,
     tags: post.tags,
     isFavorited: post.favorites.length > 0
   }));
+}
+
+export async function getPostBySlugWithComments(slug: string, userId?: string) {
+  if (!userId) {
+    const post = await prisma.post.findUnique({
+      where: { slug },
+      include: {
+        _count: { select: { favorites: true, comments: true } },
+        comments: {
+          where: { status: CommentStatus.VISIBLE },
+          include: {
+            user: {
+              select: { name: true, email: true }
+            }
+          },
+          orderBy: { createdAt: "desc" }
+        }
+      }
+    });
+
+    if (!post) {
+      return null;
+    }
+
+    return {
+      id: post.id,
+      slug: post.slug,
+      title: post.title,
+      content: post.content,
+      excerpt: post.excerpt,
+      type: post.type,
+      views: post.views,
+      favoritesCount: post._count.favorites,
+      commentsCount: post._count.comments,
+      tags: post.tags,
+      isFavorited: false,
+      comments: post.comments
+    };
+  }
+
+  const post = await prisma.post.findUnique({
+    where: { slug },
+    include: {
+      _count: { select: { favorites: true, comments: true } },
+      favorites: {
+        where: { userId },
+        select: { id: true }
+      },
+      comments: {
+        where: { status: CommentStatus.VISIBLE },
+        include: {
+          user: {
+            select: { name: true, email: true }
+          }
+        },
+        orderBy: { createdAt: "desc" }
+      }
+    }
+  });
+
+  if (!post) {
+    return null;
+  }
+
+  return {
+    id: post.id,
+    slug: post.slug,
+    title: post.title,
+    content: post.content,
+    excerpt: post.excerpt,
+    type: post.type,
+    views: post.views,
+    favoritesCount: post._count.favorites,
+    commentsCount: post._count.comments,
+    tags: post.tags,
+    isFavorited: post.favorites.length > 0,
+    comments: post.comments
+  };
 }
 
 export async function getDashboardData(userId: string) {
@@ -76,7 +160,7 @@ export async function getDashboardData(userId: string) {
         post: {
           include: {
             _count: {
-              select: { favorites: true }
+              select: { favorites: true, comments: true }
             }
           }
         }
@@ -87,7 +171,7 @@ export async function getDashboardData(userId: string) {
     prisma.post.findMany({
       where: { isPublished: true },
       include: {
-        _count: { select: { favorites: true } },
+        _count: { select: { favorites: true, comments: true } },
         favorites: {
           where: { userId },
           select: { id: true }
@@ -103,23 +187,39 @@ export async function getDashboardData(userId: string) {
     dailyTips,
     favorites: favorites.map((item) => ({
       id: item.post.id,
+      slug: item.post.slug,
       title: item.post.title,
       excerpt: item.post.excerpt,
       type: item.post.type,
       views: item.post.views,
       favoritesCount: item.post._count.favorites,
+      commentsCount: item.post._count.comments,
       tags: item.post.tags,
       isFavorited: true
     })),
     recommended: recommended.map((post) => ({
       id: post.id,
+      slug: post.slug,
       title: post.title,
       excerpt: post.excerpt,
       type: post.type,
       views: post.views,
       favoritesCount: post._count.favorites,
+      commentsCount: post._count.comments,
       tags: post.tags,
       isFavorited: post.favorites.length > 0
     }))
   };
+}
+
+export async function getCommentsForModeration() {
+  return prisma.comment.findMany({
+    include: {
+      post: { select: { title: true, slug: true, type: true } },
+      user: { select: { email: true, name: true } },
+      moderatedBy: { select: { email: true, name: true } }
+    },
+    orderBy: { createdAt: "desc" },
+    take: 100
+  });
 }

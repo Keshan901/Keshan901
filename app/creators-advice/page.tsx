@@ -13,7 +13,7 @@ export default async function CreatorsAdvicePage() {
     <main className="mx-auto min-h-screen w-full max-w-5xl space-y-6 px-4 py-10 text-slate-100 sm:px-6 lg:px-8">
       <header>
         <h1 className="text-3xl font-bold">Creators Advice</h1>
-        <p className="text-sm text-slate-300">Advice posts for creators with favorite toggles.</p>
+        <p className="text-sm text-slate-300">Advice posts for creators with favorite toggles. Comments are disabled for creator advice.</p>
       </header>
 
       {posts.length === 0 ? (

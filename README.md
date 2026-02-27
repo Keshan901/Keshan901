@@ -12,6 +12,7 @@ This repository is scaffolded as a **Next.js (App Router) TypeScript** project w
 - Explore + Trending feeds with search, filters (type/category/tag), skeleton loaders, and empty states
 - User dashboard (`/user-dashboard`) with tip of the day, daily tips feed, recommendations, and favorites
 - Content routes for `/news`, `/blogs`, and `/creators-advice` with favorite toggles
+- Commenting on blogs/news only, with admin moderation actions (hide/delete/restore)
 
 ### Scripts
 

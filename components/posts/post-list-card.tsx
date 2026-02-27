@@ -4,14 +4,28 @@ import { FavoriteToggle } from "@/components/posts/favorite-toggle";
 
 type PostItem = {
   id: string;
+  slug: string;
   title: string;
   excerpt: string | null;
   type: string;
   views: number;
   favoritesCount: number;
+  commentsCount: number;
   isFavorited: boolean;
   tags: string[];
 };
+
+function detailHref(type: string, slug: string) {
+  if (type === "NEWS") {
+    return `/news/${slug}`;
+  }
+
+  if (type === "BLOG") {
+    return `/blogs/${slug}`;
+  }
+
+  return "/creators-advice";
+}
 
 export function PostListCard({ post, canFavorite }: { post: PostItem; canFavorite?: boolean }) {
   return (
@@ -22,13 +36,14 @@ export function PostListCard({ post, canFavorite }: { post: PostItem; canFavorit
         <span className="rounded-full border border-white/20 px-2 py-1">{post.type}</span>
         <span className="rounded-full border border-white/20 px-2 py-1">Views: {post.views}</span>
         <span className="rounded-full border border-white/20 px-2 py-1">Favorites: {post.favoritesCount}</span>
+        <span className="rounded-full border border-white/20 px-2 py-1">Comments: {post.commentsCount}</span>
         {post.tags.map((tag) => (
           <span key={tag} className="rounded-full border border-cyan-300/40 px-2 py-1 text-cyan-200">
             {tag}
           </span>
         ))}
       </div>
-      <div className="mt-4">
+      <div className="mt-4 flex items-center gap-3">
         {canFavorite ? (
           <FavoriteToggle postId={post.id} isFavorited={post.isFavorited} />
         ) : (
@@ -36,6 +51,9 @@ export function PostListCard({ post, canFavorite }: { post: PostItem; canFavorit
             Sign in to manage favorites
           </Link>
         )}
+        <Link href={detailHref(post.type, post.slug)} className="text-xs text-cyan-300 hover:underline">
+          Open post
+        </Link>
       </div>
     </article>
   );

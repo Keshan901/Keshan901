@@ -19,6 +19,12 @@ enum Role {
   ADMIN
 }
 
+enum CommentStatus {
+  VISIBLE
+  HIDDEN
+  DELETED
+}
+
 model User {
   id                 String     @id @default(auto()) @map("_id") @db.ObjectId
   email              String     @unique
@@ -35,6 +41,7 @@ model User {
   updatedAt          DateTime   @updatedAt
   posts              Post[]
   comments           Comment[]
+  moderatedComments  Comment[]   @relation("CommentModeratedBy")
   favorites          Favorite[]
   auditLogs          AuditLog[]
   dailyTips          DailyTip[]
@@ -94,18 +101,24 @@ model Favorite {
 }
 
 model Comment {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  body      String
-  isEdited  Boolean   @default(false)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  postId    String    @db.ObjectId
-  userId    String?   @db.ObjectId
-  parentId  String?   @db.ObjectId
-  post      Post      @relation(fields: [postId], references: [id])
-  user      User?     @relation(fields: [userId], references: [id])
-  parent    Comment?  @relation("CommentToReplies", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  replies   Comment[] @relation("CommentToReplies")
+  id               String        @id @default(auto()) @map("_id") @db.ObjectId
+  body             String
+  isEdited         Boolean       @default(false)
+  status           CommentStatus @default(VISIBLE)
+  moderationReason String?
+  moderatedAt      DateTime?
+  moderatedById    String?       @db.ObjectId
+  deletedAt        DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  postId           String        @db.ObjectId
+  userId           String?       @db.ObjectId
+  parentId         String?       @db.ObjectId
+  post             Post          @relation(fields: [postId], references: [id])
+  user             User?         @relation(fields: [userId], references: [id])
+  moderatedBy      User?         @relation("CommentModeratedBy", fields: [moderatedById], references: [id])
+  parent           Comment?      @relation("CommentToReplies", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies          Comment[]     @relation("CommentToReplies")
 }
 
 model AuditLog {
