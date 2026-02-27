@@ -30,6 +30,7 @@ export async function getPostsByType(type: PostType, userId?: string) {
       favoritesCount: post._count.favorites,
       commentsCount: post._count.comments,
       tags: post.tags,
+      thumbnailUrl: post.thumbnailUrl,
       isFavorited: false
     }));
   }
@@ -68,6 +69,7 @@ export async function getPostsByType(type: PostType, userId?: string) {
     favoritesCount: post._count.favorites,
     commentsCount: post._count.comments,
     tags: post.tags,
+    thumbnailUrl: post.thumbnailUrl,
     isFavorited: post.favorites.length > 0
   }));
 }
@@ -105,6 +107,7 @@ export async function getPostBySlugWithComments(slug: string, userId?: string) {
       favoritesCount: post._count.favorites,
       commentsCount: post._count.comments,
       tags: post.tags,
+      thumbnailUrl: post.thumbnailUrl,
       isFavorited: false,
       comments: post.comments
     };
@@ -145,6 +148,7 @@ export async function getPostBySlugWithComments(slug: string, userId?: string) {
     favoritesCount: post._count.favorites,
     commentsCount: post._count.comments,
     tags: post.tags,
+    thumbnailUrl: post.thumbnailUrl,
     isFavorited: post.favorites.length > 0,
     comments: post.comments
   };
@@ -195,6 +199,7 @@ export async function getDashboardData(userId: string) {
       favoritesCount: item.post._count.favorites,
       commentsCount: item.post._count.comments,
       tags: item.post.tags,
+      thumbnailUrl: item.post.thumbnailUrl,
       isFavorited: true
     })),
     recommended: recommended.map((post) => ({
@@ -207,6 +212,7 @@ export async function getDashboardData(userId: string) {
       favoritesCount: post._count.favorites,
       commentsCount: post._count.comments,
       tags: post.tags,
+      thumbnailUrl: post.thumbnailUrl,
       isFavorited: post.favorites.length > 0
     }))
   };
@@ -222,4 +228,41 @@ export async function getCommentsForModeration() {
     orderBy: { createdAt: "desc" },
     take: 100
   });
+}
+
+export async function getTikTokCreatesData(query: string) {
+  const filter = query.trim();
+
+  const [videos, featuredPosts] = await Promise.all([
+    prisma.post.findMany({
+      where: {
+        isPublished: true,
+        AND: [
+          { OR: [{ type: PostType.TIKTOK_TIP }, { isTikTokFeatured: true }] },
+          ...(filter
+            ? [
+                {
+                  OR: [
+                    { title: { contains: filter, mode: "insensitive" } },
+                    { tags: { has: filter.toLowerCase() } }
+                  ]
+                }
+              ]
+            : [])
+        ]
+      },
+      orderBy: [{ views: "desc" }, { publishedAt: "desc" }],
+      take: 18
+    }),
+    prisma.post.findMany({
+      where: {
+        isPublished: true,
+        isTikTokFeatured: true
+      },
+      orderBy: [{ views: "desc" }, { publishedAt: "desc" }],
+      take: 6
+    })
+  ]);
+
+  return { videos, featuredPosts };
 }

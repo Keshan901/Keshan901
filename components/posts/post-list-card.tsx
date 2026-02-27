@@ -13,6 +13,7 @@ type PostItem = {
   commentsCount: number;
   isFavorited: boolean;
   tags: string[];
+  thumbnailUrl?: string | null;
 };
 
 function detailHref(type: string, slug: string) {
@@ -29,7 +30,12 @@ function detailHref(type: string, slug: string) {
 
 export function PostListCard({ post, canFavorite }: { post: PostItem; canFavorite?: boolean }) {
   return (
-    <article className="rounded-2xl border border-white/10 bg-white/5 p-5">
+    <article className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5">
+      {post.thumbnailUrl ? (
+        <div className="mb-3 h-40 w-full overflow-hidden rounded-lg bg-slate-900/70">
+          <img src={post.thumbnailUrl} alt={post.title} className="h-full w-full object-cover" />
+        </div>
+      ) : null}
       <h3 className="text-xl font-semibold">{post.title}</h3>
       <p className="mt-2 text-sm text-slate-300">{post.excerpt || "No excerpt available."}</p>
       <div className="mt-4 flex flex-wrap gap-2 text-xs">

@@ -68,7 +68,8 @@ async function main() {
       authorId: adminUser.id,
       categoryId: newsCategory.id,
       tags: ["product", "release"],
-      views: 120
+      views: 120,
+      thumbnailUrl: "/uploads/news-thumb.jpg"
     },
     create: {
       title: "New Platform Updates",
@@ -82,7 +83,8 @@ async function main() {
       authorId: adminUser.id,
       categoryId: newsCategory.id,
       tags: ["product", "release"],
-      views: 120
+      views: 120,
+      thumbnailUrl: "/uploads/news-thumb.jpg"
     }
   });
 
@@ -98,7 +100,8 @@ async function main() {
       authorId: writerUser.id,
       categoryId: adviceCategory.id,
       tags: ["strategy", "creator"],
-      views: 95
+      views: 95,
+      thumbnailUrl: "/uploads/advice-thumb.jpg"
     },
     create: {
       title: "How to Build a Daily Content Routine",
@@ -112,7 +115,45 @@ async function main() {
       authorId: writerUser.id,
       categoryId: adviceCategory.id,
       tags: ["strategy", "creator"],
-      views: 95
+      views: 95,
+      thumbnailUrl: "/uploads/advice-thumb.jpg"
+    }
+  });
+
+
+  const tiktokPost = await prisma.post.upsert({
+    where: { slug: "three-tiktok-hooks-for-fast-retention" },
+    update: {
+      title: "Three TikTok Hooks for Faster Retention",
+      content: "Open with a hard contrast, tease the payoff, and show the result within 3 seconds.",
+      type: PostType.TIKTOK_TIP,
+      status: PostStatus.PUBLISHED,
+      isPublished: true,
+      publishedAt: new Date(),
+      authorId: adminUser.id,
+      categoryId: tiktokCategory.id,
+      tags: ["tiktok", "hooks", "retention"],
+      views: 180,
+      thumbnailUrl: "/uploads/tiktok-thumb.jpg",
+      videoUrl: "/uploads/tiktok-demo.mp4",
+      isTikTokFeatured: true
+    },
+    create: {
+      title: "Three TikTok Hooks for Faster Retention",
+      slug: "three-tiktok-hooks-for-fast-retention",
+      excerpt: "High-performing opening patterns for short-form video.",
+      content: "Open with a hard contrast, tease the payoff, and show the result within 3 seconds.",
+      type: PostType.TIKTOK_TIP,
+      status: PostStatus.PUBLISHED,
+      isPublished: true,
+      publishedAt: new Date(),
+      authorId: adminUser.id,
+      categoryId: tiktokCategory.id,
+      tags: ["tiktok", "hooks", "retention"],
+      views: 180,
+      thumbnailUrl: "/uploads/tiktok-thumb.jpg",
+      videoUrl: "/uploads/tiktok-demo.mp4",
+      isTikTokFeatured: true
     }
   });
 
@@ -167,6 +208,13 @@ async function main() {
         entityId: advicePost.id,
         actorId: writerUser.id,
         metadata: { postType: PostType.ADVICE }
+      },
+      {
+        action: "SEED_CREATED_POST",
+        entityType: "Post",
+        entityId: tiktokPost.id,
+        actorId: adminUser.id,
+        metadata: { postType: PostType.TIKTOK_TIP }
       }
     ]
   });
@@ -176,11 +224,11 @@ async function main() {
     credentials: "admin@example.com / AdminPass123! | writer@example.com / WriterPass123!",
     categories: 4,
     users: 2,
-    posts: 2,
+    posts: 3,
     favorites: 1,
     comments: 2,
     dailyTips: 1,
-    auditLogs: 2
+    auditLogs: 3
   });
 }
 

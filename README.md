@@ -13,8 +13,10 @@ This repository is scaffolded as a **Next.js (App Router) TypeScript** project w
 - User dashboard (`/user-dashboard`) with tip of the day, daily tips feed, recommendations, and favorites
 - Content routes for `/news`, `/blogs`, and `/creators-advice` with favorite toggles
 - Commenting on blogs/news only, with admin moderation actions (hide/delete/restore)
-- Advanced `/admin-dashboard` with CRUD for users, posts, categories/subcategories, and daily tips
-- TipTap rich text editing + server-side sanitization + post scheduling/drafts/SEO fields
+- Advanced `/admin-dashboard` with sidebar navigation, trackers and chart widgets, and CRUD for users/posts/categories/subcategories/daily tips
+- TipTap rich text editing + server-side sanitization + post scheduling/drafts/SEO fields + TikTok feature flags/media URLs
+- Dedicated premium `/tiktok-creates` page with banner search, video cards, featured sidebar, skeleton loader, and empty states
+- Error boundaries for global app, admin dashboard, and TikTok Creates route
 
 ### Scripts
 

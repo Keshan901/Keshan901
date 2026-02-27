@@ -69,6 +69,9 @@ model Post {
   metaTitle       String?
   metaDescription String?
   ogImage         String?
+  thumbnailUrl    String?
+  videoUrl        String?
+  isTikTokFeatured Boolean    @default(false)
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
   authorId        String     @db.ObjectId

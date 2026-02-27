@@ -7,7 +7,7 @@ const navLinks = [
   { label: "Explore", href: "/explore" },
   { label: "Trending Contents", href: "/trending" },
   { label: "Creators", href: "/creators-advice" },
-  { label: "TikTok Creates", href: "/user-dashboard" }
+  { label: "TikTok Creates", href: "/tiktok-creates" }
 ];
 
 const sections = [

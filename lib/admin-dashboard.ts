@@ -58,6 +58,28 @@ export async function getAdminDashboardData(filters: ReturnType<typeof normalize
     prisma.dailyTip.findMany({ orderBy: { tipDate: "asc" }, take: 100 })
   ]);
 
+  const postByStatus = Object.values(PostStatus).map((status) => ({
+    label: status,
+    value: posts.filter((post) => post.status === status).length
+  }));
+
+  const postByType = Object.values(PostType).map((type) => ({
+    label: type,
+    value: posts.filter((post) => post.type === type).length
+  }));
+
+  const stats = {
+    users: users.length,
+    admins: users.filter((user) => user.role === Role.ADMIN).length,
+    lockedUsers: users.filter((user) => !user.isActive).length,
+    posts: posts.length,
+    publishedPosts: posts.filter((post) => post.status === PostStatus.PUBLISHED).length,
+    scheduledPosts: posts.filter((post) => post.status === PostStatus.SCHEDULED).length,
+    categories: categories.length,
+    subcategories: categories.filter((category) => Boolean(category.parentId)).length,
+    dailyTips: dailyTips.length
+  };
+
   return {
     users,
     posts,
@@ -65,6 +87,11 @@ export async function getAdminDashboardData(filters: ReturnType<typeof normalize
     dailyTips,
     postTypes: Object.values(PostType),
     postStatuses: Object.values(PostStatus),
-    roles: Object.values(Role)
+    roles: Object.values(Role),
+    trackers: {
+      stats,
+      postByStatus,
+      postByType
+    }
   };
 }

@@ -82,6 +82,9 @@ export async function upsertPost(formData: FormData) {
   const metaTitle = String(formData.get("metaTitle") || "").trim();
   const metaDescription = String(formData.get("metaDescription") || "").trim();
   const ogImage = String(formData.get("ogImage") || "").trim();
+  const thumbnailUrl = String(formData.get("thumbnailUrl") || "").trim();
+  const videoUrl = String(formData.get("videoUrl") || "").trim();
+  const isTikTokFeatured = String(formData.get("isTikTokFeatured") || "") === "on";
 
   if (!title || !rawContent) {
     throw new Error("Title and content are required");
@@ -97,7 +100,7 @@ export async function upsertPost(formData: FormData) {
   });
 
   const scheduledFor = scheduledForInput ? new Date(scheduledForInput) : null;
-  const isPublished = status === PostStatus.PUBLISHED;
+  const resolvedStatus = status === PostStatus.SCHEDULED && !scheduledFor ? PostStatus.DRAFT : status;
 
   const payload = {
     title,
@@ -107,13 +110,16 @@ export async function upsertPost(formData: FormData) {
     type,
     categoryId: categoryId || null,
     tags,
-    status,
-    isPublished,
-    scheduledFor,
-    publishedAt: isPublished ? new Date() : null,
+    status: resolvedStatus,
+    isPublished: resolvedStatus === PostStatus.PUBLISHED,
+    scheduledFor: resolvedStatus === PostStatus.SCHEDULED ? scheduledFor : null,
+    publishedAt: resolvedStatus === PostStatus.PUBLISHED ? new Date() : null,
     metaTitle: metaTitle || null,
     metaDescription: metaDescription || null,
     ogImage: ogImage || null,
+    thumbnailUrl: thumbnailUrl || null,
+    videoUrl: videoUrl || null,
+    isTikTokFeatured,
     authorId: actorId
   };
 
