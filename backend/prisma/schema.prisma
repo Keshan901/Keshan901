@@ -1,0 +1,154 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum PostType {
+  NEWS
+  BLOG
+  ADVICE
+  TIKTOK_TIP
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum CommentStatus {
+  VISIBLE
+  HIDDEN
+  DELETED
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  SCHEDULED
+}
+
+model User {
+  id                  String    @id @default(auto()) @map("_id") @db.ObjectId
+  email               String    @unique
+  username            String    @unique
+  passwordHash        String
+  role                Role      @default(USER)
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+  name                String?
+  bio                 String?
+  avatarUrl           String?
+  isActive            Boolean   @default(true)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  posts               Post[]
+  comments            Comment[]
+  moderatedComments   Comment[] @relation("CommentModeratedBy")
+  favorites           Favorite[]
+  auditLogs           AuditLog[]
+  dailyTips           DailyTip[]
+}
+
+model Post {
+  id              String     @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  slug            String     @unique
+  excerpt         String?
+  content         String
+  type            PostType
+  tags            String[]
+  views           Int        @default(0)
+  status          PostStatus @default(DRAFT)
+  isPublished     Boolean    @default(false)
+  scheduledFor    DateTime?
+  publishedAt     DateTime?
+  metaTitle       String?
+  metaDescription String?
+  ogImage         String?
+  thumbnailUrl    String?
+  videoUrl        String?
+  isTikTokFeatured Boolean    @default(false)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  authorId        String     @db.ObjectId
+  categoryId      String?    @db.ObjectId
+  author          User       @relation(fields: [authorId], references: [id])
+  category        Category?  @relation(fields: [categoryId], references: [id])
+  comments        Comment[]
+  favorites       Favorite[]
+}
+
+model Category {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  slug        String     @unique
+  description String?
+  parentId    String?    @db.ObjectId
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  parent      Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children    Category[] @relation("CategoryHierarchy")
+  posts       Post[]
+
+  @@unique([name, parentId])
+}
+
+model DailyTip {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  tipDate    DateTime  @unique
+  title      String
+  content    String
+  sourceType PostType?
+  createdAt  DateTime  @default(now())
+  authorId   String?   @db.ObjectId
+  author     User?     @relation(fields: [authorId], references: [id])
+}
+
+model Favorite {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  postId    String   @db.ObjectId
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id])
+
+  @@unique([userId, postId])
+}
+
+model Comment {
+  id               String        @id @default(auto()) @map("_id") @db.ObjectId
+  body             String
+  isEdited         Boolean       @default(false)
+  status           CommentStatus @default(VISIBLE)
+  moderationReason String?
+  moderatedAt      DateTime?
+  moderatedById    String?       @db.ObjectId
+  deletedAt        DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  postId           String        @db.ObjectId
+  userId           String?       @db.ObjectId
+  parentId         String?       @db.ObjectId
+  post             Post          @relation(fields: [postId], references: [id])
+  user             User?         @relation(fields: [userId], references: [id])
+  moderatedBy      User?         @relation("CommentModeratedBy", fields: [moderatedById], references: [id])
+  parent           Comment?      @relation("CommentToReplies", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies          Comment[]     @relation("CommentToReplies")
+}
+
+model AuditLog {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  action     String
+  entityType String
+  entityId   String?
+  metadata   Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+  actorId    String?  @db.ObjectId
+  actor      User?    @relation(fields: [actorId], references: [id])
+}
