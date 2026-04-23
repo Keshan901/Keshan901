@@ -1,0 +1,110 @@
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-family: Newsreader, Georgia, serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.menu-list {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.menu-item a,
+.menu-trigger {
+  font-size: 0.95rem;
+  color: #222;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.scroll-row {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  padding-bottom: var(--space-1);
+}
+
+.pick-card {
+  flex: 0 0 230px;
+}
+
+.pick-card img {
+  height: 140px;
+  border-radius: var(--radius);
+  margin-bottom: var(--space-2);
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.tag-list a {
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.feed-item {
+  display: grid;
+  grid-template-columns: 116px 1fr;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.feed-item img {
+  height: 90px;
+  border-radius: var(--radius);
+}
+
+.search-box input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.65rem 0.75rem;
+  margin-top: var(--space-1);
+}
+
+.sidebar-block {
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.sidebar-block li + li {
+  margin-top: var(--space-2);
+}
+
+.ad-slot {
+  background: var(--surface);
+  border: 1px dashed #c5c5c5;
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  text-align: center;
+}
+
+@media (max-width: 899px) {
+  .menu-list {
+    gap: var(--space-2);
+    font-size: 0.88rem;
+  }
+
+  .feed-item {
+    grid-template-columns: 1fr;
+  }
+
+  .top-nav {
+    overflow-x: auto;
+  }
+}
