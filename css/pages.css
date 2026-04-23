@@ -1,0 +1,149 @@
+.mega-menu {
+  border-bottom: 1px solid var(--border);
+  background: #fcfcfc;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.25s ease, opacity 0.2s ease;
+}
+
+.mega-menu.is-open {
+  opacity: 1;
+}
+
+.mega-inner {
+  padding: var(--space-3) 0 var(--space-4);
+}
+
+.mega-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: var(--space-4);
+}
+
+.categories {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.category-link {
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.category-link.is-active {
+  border-color: #777;
+}
+
+.mega-track {
+  display: flex;
+  width: 100%;
+  transition: transform 0.25s ease;
+}
+
+.mega-panel {
+  min-width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.subcat-list {
+  display: grid;
+  gap: var(--space-2);
+  align-content: start;
+}
+
+.subcat-list a {
+  color: #222;
+}
+
+.mini-feature img {
+  height: 140px;
+  border-radius: var(--radius);
+  margin-bottom: var(--space-2);
+}
+
+.hero-feature {
+  position: relative;
+  height: 420px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #e7e7e7;
+}
+
+.hero-feature img {
+  height: 100%;
+  transition: opacity 0.3s ease;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: var(--space-4);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.15));
+}
+
+.hero-overlay p,
+.hero-overlay h1 {
+  color: #fff;
+}
+
+.hero-overlay h1 {
+  margin: 0.35rem 0;
+}
+
+.hero-list {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.hero-item {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-2);
+  cursor: pointer;
+  background: #fff;
+}
+
+.hero-item img {
+  height: 64px;
+  border-radius: 4px;
+}
+
+.hero-item.is-active {
+  border-color: #666;
+  background: #fafafa;
+}
+
+.hero-feature.is-fading img,
+.hero-feature.is-fading .hero-overlay {
+  opacity: 0.45;
+}
+
+@media (max-width: 899px) {
+  .mega-menu {
+    display: none;
+  }
+
+  .hero-feature {
+    height: 320px;
+  }
+
+  .hero-list {
+    display: flex;
+    overflow-x: auto;
+    gap: var(--space-2);
+  }
+
+  .hero-item {
+    flex: 0 0 220px;
+  }
+}
